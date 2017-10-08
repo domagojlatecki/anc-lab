@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>at.dom-l</groupId>
+    <artifactId>anc-labs</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>ANC Labs</name>
+    <url>https://github.com/domagojlatecki/anc-lab</url>
+    <description>Laboratory exercises for subject "Applied Numerical Computing"</description>
+
+    <developers>
+        <developer>
+            <id>domagoj.latecki</id>
+            <name>Domagoj Latečki</name>
+            <email>domagoj.latecki@gmail.com</email>
+        </developer>
+    </developers>
+
+    <!-- Configuration -->
+
+    <properties>
+        <kotlin.version>1.1.4-3</kotlin.version>
+        <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <plugins>
+            <plugin>
+            <artifactId>kotlin-maven-plugin</artifactId>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <version>${kotlin.version}</version>
+
+            <executions>
+                <execution>
+                    <id>compile</id>
+                    <goals> <goal>compile</goal> </goals>
+                </execution>
+
+                <execution>
+                    <id>test-compile</id>
+                    <goals> <goal>test-compile</goal> </goals>
+                </execution>
+            </executions>
+        </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <!-- Dependencies -->
+
+    <dependencies>
+        <!-- Kotlin -->
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+    </dependencies>
+</project>
