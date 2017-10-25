@@ -6,13 +6,19 @@ class MatrixTransformation(rows: Int, columns: Int) {
     private val columnIndexes: IntArray = IntArray(columns) { i -> i }
 
     fun swapColumns(from: Int, to: Int) {
-        columnIndexes[from] = to
-        columnIndexes[to] = from
+        val newFrom = this.columnIndexes[to]
+        val newTo = this.columnIndexes[from]
+
+        columnIndexes[from] = newFrom
+        columnIndexes[to] = newTo
     }
 
     fun swapRows(from: Int, to: Int) {
-        rowIndexes[from] = to
-        rowIndexes[to] = from
+        val newFrom = this.rowIndexes[to]
+        val newTo = this.rowIndexes[from]
+
+        rowIndexes[from] = newFrom
+        rowIndexes[to] = newTo
     }
 
     fun apply(matrix: Matrix): Matrix {

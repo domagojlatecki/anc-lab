@@ -1,6 +1,7 @@
 package at.doml.anc.lab1
 
 import java.io.File
+import java.lang.Math.abs
 
 interface Matrix {
 
@@ -69,7 +70,7 @@ interface Matrix {
     private fun checkElementEquals(other: Matrix): Boolean {
         for (i in 0 until this.rows) {
             for (j in 0 until this.columns) {
-                if (this[i, j] != other[i, j]) {
+                if (abs(this[i, j] - other[i, j]) >= Matrix.delta) {
                     return false
                 }
             }
@@ -91,6 +92,8 @@ interface Matrix {
     override operator fun equals(other: Any?): Boolean
 
     companion object {
+
+        private val delta = 10e-6
 
         fun writeToFile(file: File, matrix: Matrix) {
             file.writeText(matrix.toString())

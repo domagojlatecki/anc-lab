@@ -8,12 +8,19 @@ fun main(args: Array<String>) {
         showUsage()
     }
 
-    if (args[0] == "-lu") {
-        luSolve(args)
-    } else if (args[0] == "-lup") {
-        lupSolve(args)
-    } else {
-        showUsage()
+    when {
+        args[0] == "-lu" -> safeInvoke { luSolve(args) }
+        args[0] == "-lup" -> safeInvoke { lupSolve(args) }
+        else -> showUsage()
+    }
+}
+
+private fun safeInvoke(function: () -> Unit) {
+    try {
+        function.invoke()
+    } catch (e: Exception) {
+        println("${e.message?.capitalize()}, aborting.")
+        exitProcess(1)
     }
 }
 
@@ -142,12 +149,7 @@ private fun lupSolve(args: Array<String>) {
     showSystem(matrix, vector)
     println("Performing LUP decomposition...")
 
-    val (lu, transformations) = try {
-        MatrixOperations.lupDecomposition(matrix, tolerance)
-    } catch (e: IllegalStateException) {
-        println("${e.message?.capitalize()}, aborting.")
-        exitProcess(1)
-    }
+    val (lu, transformations) = MatrixOperations.lupDecomposition(matrix, tolerance)
 
     printMatrix("LU", lu)
     println()

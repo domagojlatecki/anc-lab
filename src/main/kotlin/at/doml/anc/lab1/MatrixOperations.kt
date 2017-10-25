@@ -1,6 +1,10 @@
 package at.doml.anc.lab1
 
+import java.lang.Math.abs
+
 object MatrixOperations {
+
+    private val tolerance = 10e-6
 
     private fun checkIfDimensionsAreCompatible(matrix: Matrix, vector: Matrix) {
         this.checkIfSquare(matrix)
@@ -13,6 +17,14 @@ object MatrixOperations {
             throw IllegalArgumentException("incompatible matrix and vector dimensions:" +
                     " [${matrix.rows}, ${matrix.columns}] vs [${vector.rows}, ${vector.columns}]")
         }
+    }
+
+    private fun safeDiv(a: Double, b: Double): Double {
+        if (abs(b) <= this.tolerance) {
+            throw ArithmeticException("division by zero or near-zero number: $a / $b")
+        }
+
+        return a / b
     }
 
     fun forwardSubstitution(matrix: Matrix, vector: Matrix): Matrix {
@@ -28,7 +40,7 @@ object MatrixOperations {
                 out[i, 0] -= matrix[i, j] * out[j, 0]
             }
 
-            out[i, 0] /= matrix[i, i]
+            out[i, 0] = this.safeDiv(out[i, 0], matrix[i, i])
         }
 
         return out
@@ -47,7 +59,7 @@ object MatrixOperations {
                 out[i, 0] -= matrix[i, j] * out[j, 0]
             }
 
-            out[i, 0] /= matrix[i, i]
+            out[i, 0] = this.safeDiv(out[i, 0], matrix[i, i])
         }
 
         return out
@@ -67,7 +79,7 @@ object MatrixOperations {
 
         for (i in 0 until n) {
             for (j in i + 1 until n) {
-                lu[j, i] = lu[j, i] / lu[i, i]
+                lu[j, i] = this.safeDiv(lu[j, i], lu[i, i])
 
                 for (k in i + 1 until n) {
                     lu[j, k] = lu[j, k] - lu[j, i] * lu[i, k]
@@ -114,7 +126,7 @@ object MatrixOperations {
             }
 
             for (j in i + 1 until n) {
-                lu[j, i] = lu[j, i] / lu[i, i]
+                lu[j, i] = this.safeDiv(lu[j, i], lu[i, i])
 
                 for (k in i + 1 until n) {
                     lu[j, k] = lu[j, k] - lu[j, i] * lu[i, k]
