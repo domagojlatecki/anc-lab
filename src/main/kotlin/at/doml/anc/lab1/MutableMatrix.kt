@@ -36,6 +36,8 @@ class MutableMatrix constructor(rows: Int, columns: Int) : Matrix {
 
     override operator fun get(row: Int, column: Int): Double = this.elements[row][column]
 
+    override operator fun get(row: Int): DoubleArray = this.elements[row].copyOf()
+
     override operator fun set(row: Int, column: Int, value: Double) {
         this.elements[row][column] = value
     }

@@ -14,6 +14,8 @@ interface Matrix {
 
     operator fun get(row: Int, column: Int): Double
 
+    operator fun get(row: Int): DoubleArray
+
     operator fun set(row: Int, column: Int, value: Double)
 
     private fun throwIncompatibleDimensionsException(other: Matrix): Nothing = throw IllegalArgumentException(
