@@ -44,7 +44,7 @@ interface Matrix {
             this.throwIncompatibleDimensionsException(other)
         }
 
-        return this.newMatrixWithElements({ i, j -> binaryOperator.invoke(this[i, j], other[i, j]) })
+        return this.newMatrixWithElements({ i, j -> binaryOperator(this[i, j], other[i, j]) })
     }
 
     operator fun plus(other: Matrix): Matrix = this.binaryOperation(other, Double::plus)
@@ -83,6 +83,66 @@ interface Matrix {
 
     fun transpose(): Matrix = this.newMatrixWithElements(this.columns, this.rows, { i, j -> this[j, i] })
 
+    fun inverse(tolerance: Double = 0.0): Matrix {
+        if (this.columns != this.rows) {
+            throw IllegalArgumentException("matrix must be square")
+        }
+
+        val (lu, transformations) = MatrixOperations.lupDecomposition(this, tolerance)
+        return this.calculateInverse(lu, transformations)
+    }
+
+    private fun calculateInverse(lu: Matrix, transformations: MatrixTransformation): Matrix {
+        val out = MutableMatrix(this.rows, this.columns)
+        val dimension = this.rows
+
+        for (i in 0 until dimension) {
+            val vector = MutableMatrix(Array(dimension) { index ->
+                if (index == i) doubleArrayOf(1.0) else doubleArrayOf(0.0)
+            })
+            val swapped = transformations.apply(vector)
+            val y = MatrixOperations.forwardSubstitution(asLMatrix(lu), swapped)
+            val x = MatrixOperations.backwardSubstitution(asUMatrix(lu), y)
+
+            for (j in 0 until dimension) {
+                out[j, i] = x[j, 0]
+            }
+        }
+
+        return out
+    }
+
+    private fun asLMatrix(matrix: Matrix): Matrix {
+        val new = matrix.copy()
+
+        for (i in 0 until new.rows) {
+            for (j in 0 until new.columns) {
+                new[i, j] = when {
+                    i == j -> 1.0
+                    i < j -> 0.0
+                    else -> matrix[i, j]
+                }
+            }
+        }
+
+        return new
+    }
+
+    private fun asUMatrix(matrix: Matrix): Matrix {
+        val new = matrix.copy()
+
+        for (i in 0 until new.rows) {
+            for (j in 0 until new.columns) {
+                new[i, j] = when {
+                    i <= j -> matrix[i, j]
+                    else -> 0.0
+                }
+            }
+        }
+
+        return new
+    }
+
     fun equals(other: Matrix): Boolean = if (this.rows != other.rows || this.columns != other.columns) {
         false
     } else {
@@ -90,6 +150,8 @@ interface Matrix {
     }
 
     fun toPrettyString(): String
+
+    fun toArrayString(): String
 
     override operator fun equals(other: Any?): Boolean
 

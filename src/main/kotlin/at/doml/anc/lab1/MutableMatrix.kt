@@ -90,6 +90,10 @@ class MutableMatrix constructor(rows: Int, columns: Int) : Matrix {
         return builder.toString()
     }
 
+    override fun toArrayString(): String = this.elements.map {
+        it.joinToString(prefix = "[", postfix = "]", separator = ",")
+    }.joinToString(prefix = "[", postfix = "]", separator = ",")
+
     override fun equals(other: Any?): Boolean = when (other) {
         is Matrix -> this.equals(other)
         else -> false
